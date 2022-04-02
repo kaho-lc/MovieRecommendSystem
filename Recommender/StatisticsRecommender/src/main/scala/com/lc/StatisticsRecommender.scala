@@ -1,17 +1,16 @@
 package com.lc
 
 import org.apache.spark.SparkConf
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.DataFrame
+import java.util.Properties
+
 
 import java.text.SimpleDateFormat
 import java.util.Date
 
 object StatisticsRecommender {
-
-  import org.apache.spark.sql.DataFrame
-
-  import java.util.Properties
-
   //定义表名
   val Mysql_MovieTable_Name = "movie"
   val Mysql_RatingTable_Name = "rating"
@@ -37,13 +36,15 @@ object StatisticsRecommender {
   prop.put("password", config("mysql.password"))
 
   def main(args: Array[String]): Unit = {
-    import org.apache.spark.rdd.RDD
     val conf: SparkConf = new SparkConf().setMaster(config("spark.cores")).setAppName("StatisticsRecommender")
     val spark: SparkSession = SparkSession.builder().config(conf).getOrCreate()
 
     //读取数据转换成DataFrame
     val ratingDF: DataFrame = spark.sqlContext.read.jdbc(config("mysql.url"), Mysql_RatingTable_Name, prop);
     val movieDF: DataFrame = spark.sqlContext.read.jdbc(config("mysql.url"), Mysql_MovieTable_Name, prop);
+
+    import spark.implicits._
+
 
     //创建名为ratings的临时视图
     ratingDF.createOrReplaceTempView("ratings")
@@ -68,13 +69,14 @@ object StatisticsRecommender {
 
     //从临时表中查找电影在各个月份的评分统计，mid , count , yearmonth
     val rateMoreRecentlyMovies: DataFrame = spark.sql("select mid , count(mid) as count , yearmonth from  ratingOfMonth group by mid , yearmonth order by yearmonth desc , count desc")
+
     //存储到MySQL中
     //    storeDFtoMySql(rateMoreRecentlyMovies, RATE_MORE_RECENTLY_MOVIES)
 
 
     //3.电影平均得分统计:根据历史数据中所有用户对电影的评分，周期性的计算每个电影的平均得分。
     //mid , avg
-    val averageMoviesDF: DataFrame = spark.sql("select mid , avg(score) as avg from ratings group by mid")
+    val averageMoviesDF: DataFrame = spark.sql("select mid , avg(score) as score from ratings group by mid")
 
     //存储到MySQL中
     //    storeDFtoMySql(averageMoviesDF, AVERAGE_MOVIES)
@@ -82,10 +84,35 @@ object StatisticsRecommender {
 
     //4.每个类别优质电影统计:根据提供的所有电影类别，分别计算每种类型的电影集合中评分最高的 10 个电影。
     //定义出所有的类别
-    List("Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama", "Family", "Fantasy", "Foreign", "History", "Horror", "Music", "Mystery", "Romance", "Science", "Tv", "Thriller", "War", "Western")
-    
+    val genres: List[String] = List("Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama", "Family", "Fantasy", "Foreign", "History", "Horror", "Music", "Mystery", "Romance", "Science", "Tv", "Thriller", "War", "Western")
+
+    //把平均评分加入到电影表中，加一列
+    val movieWithScore: DataFrame = movieDF.join(averageMoviesDF, "mid")
+
+    //做笛卡尔积，将genres转换成rdd
+    val genresRDD: RDD[String] = spark.sparkContext.makeRDD(genres)
 
 
+    //用来拼接字符串
+    val builder: StringBuilder = new StringBuilder
+
+    //计算类别的top10,首先对类别和电影做笛卡尔积
+    val genresTopMoviesDF: DataFrame = genresRDD.cartesian(movieWithScore.rdd)
+      .filter {
+        //找出movie的字段genres值包含当前类别的那些，表示符合要求
+        case (genre, row) => row.getAs[String]("genres").toLowerCase.contains(genre.toLowerCase)
+      }
+      .map {
+        case (genre, row) => (genre, (row.getAs[Int]("mid"), row.getAs[Double]("score")))
+      }
+      .groupByKey()
+      .map {
+        //        case (genre, items) => GenresRecommendation(genre, items.toList.sortWith(_._2 > _._2).take(10).map(item => builder.append("{\"mid\":" + item._1 + "," + "\"score\":" + item._2 + "}").toString())
+        case (genre, items) => GenresRecommendation(genre, items.toList.sortWith(_._2 > _._2).take(10).map(item => "{\"mid\":" + item._1 + "," + "\"score\":" + item._2 + "}").toString())
+      }.toDF()
+
+    //存储到MySQL
+    storeDFtoMySql(genresTopMoviesDF, GENRES_TOP_MOVIES)
 
     //关闭资源
     spark.stop();
@@ -106,6 +133,6 @@ object StatisticsRecommender {
   case class Recommendation(mid: Int, score: Double)
 
   //定义电影类别top10推荐样例类
-  case class GenresRecommendation(genres: String, recs: Seq[Recommendation])
+  case class GenresRecommendation(genres: String, recs: String)
 
 }

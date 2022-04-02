@@ -769,88 +769,150 @@ SELECT|sys.sys_config
       <ObjectGrants>ALL PRIVILEGES
 </ObjectGrants>
     </user>
-    <table id="237" parent="6" name="movie"/>
-    <table id="238" parent="6" name="rating"/>
-    <table id="239" parent="6" name="tag"/>
-    <column id="240" parent="237" name="mid">
+    <table id="237" parent="6" name="averagemovies"/>
+    <table id="238" parent="6" name="genrestopmovies"/>
+    <table id="239" parent="6" name="movie"/>
+    <table id="240" parent="6" name="movierecs"/>
+    <table id="241" parent="6" name="ratemoremovies"/>
+    <table id="242" parent="6" name="ratemorerecentlymovies"/>
+    <table id="243" parent="6" name="rating"/>
+    <table id="244" parent="6" name="tag"/>
+    <table id="245" parent="6" name="userrecs"/>
+    <column id="246" parent="237" name="mid">
+      <Position>1</Position>
+      <DataType>int(11)|0s</DataType>
+    </column>
+    <column id="247" parent="237" name="score">
+      <Position>2</Position>
+      <DataType>double|0s</DataType>
+    </column>
+    <column id="248" parent="238" name="genres">
+      <Position>1</Position>
+      <DataType>text|0s</DataType>
+    </column>
+    <column id="249" parent="238" name="recs">
+      <Position>2</Position>
+      <DataType>text|0s</DataType>
+    </column>
+    <column id="250" parent="239" name="mid">
       <Position>1</Position>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="241" parent="237" name="name">
+    <column id="251" parent="239" name="name">
       <Position>2</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="242" parent="237" name="descri">
+    <column id="252" parent="239" name="descri">
       <Position>3</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="243" parent="237" name="timelog">
+    <column id="253" parent="239" name="timelog">
       <Position>4</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="244" parent="237" name="issue">
+    <column id="254" parent="239" name="issue">
       <Position>5</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="245" parent="237" name="shoot">
+    <column id="255" parent="239" name="shoot">
       <Position>6</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="246" parent="237" name="language">
+    <column id="256" parent="239" name="language">
       <Position>7</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="247" parent="237" name="genres">
+    <column id="257" parent="239" name="genres">
       <Position>8</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="248" parent="237" name="actors">
+    <column id="258" parent="239" name="actors">
       <Position>9</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="249" parent="237" name="directors">
+    <column id="259" parent="239" name="directors">
       <Position>10</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="250" parent="238" name="uid">
+    <column id="260" parent="240" name="mid">
       <Position>1</Position>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="251" parent="238" name="mid">
+    <column id="261" parent="240" name="recs">
+      <Position>2</Position>
+      <DataType>text|0s</DataType>
+    </column>
+    <column id="262" parent="241" name="mid">
+      <Position>1</Position>
+      <DataType>int(11)|0s</DataType>
+    </column>
+    <column id="263" parent="241" name="count">
+      <Position>2</Position>
+      <DataType>bigint(20)|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="264" parent="242" name="mid">
+      <Position>1</Position>
+      <DataType>int(11)|0s</DataType>
+    </column>
+    <column id="265" parent="242" name="count">
+      <Position>2</Position>
+      <DataType>bigint(20)|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="266" parent="242" name="yearmonth">
+      <Position>3</Position>
+      <DataType>int(11)|0s</DataType>
+    </column>
+    <column id="267" parent="243" name="uid">
+      <Position>1</Position>
+      <DataType>int(11)|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="268" parent="243" name="mid">
       <Position>2</Position>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="252" parent="238" name="score">
+    <column id="269" parent="243" name="score">
       <Position>3</Position>
       <DataType>double|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="253" parent="238" name="timestamp">
+    <column id="270" parent="243" name="timestamp">
       <Position>4</Position>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="254" parent="239" name="uid">
+    <column id="271" parent="244" name="uid">
       <Position>1</Position>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="255" parent="239" name="mid">
+    <column id="272" parent="244" name="mid">
       <Position>2</Position>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="256" parent="239" name="tag">
+    <column id="273" parent="244" name="tag">
       <Position>3</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="257" parent="239" name="timestamp">
+    <column id="274" parent="244" name="timestamp">
       <Position>4</Position>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
+    </column>
+    <column id="275" parent="245" name="uid">
+      <Position>1</Position>
+      <DataType>int(11)|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="276" parent="245" name="recs">
+      <Position>2</Position>
+      <DataType>text|0s</DataType>
     </column>
   </database-model>
 </dataSource>

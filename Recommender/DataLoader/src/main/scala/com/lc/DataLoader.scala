@@ -8,6 +8,9 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.client.indices.GetIndexRequest
 import org.elasticsearch.client.{RequestOptions, RestClient, RestHighLevelClient}
+import org.elasticsearch.client.indices.CreateIndexRequest
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest
+
 
 import java.util.Properties
 
@@ -140,14 +143,13 @@ object DataLoader {
 
     //如果索引存在
     if (exist) {
-      import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest
       val deleteIndexRequest = new DeleteIndexRequest()
       deleteIndexRequest.indices("recommender")
       //删除索引
       client.indices().delete(deleteIndexRequest, RequestOptions.DEFAULT);
 
     } else {
-      import org.elasticsearch.client.indices.CreateIndexRequest //否则
+      //否则
       //创建索引
       client.indices().create(new CreateIndexRequest("recommender"), RequestOptions.DEFAULT);
     }

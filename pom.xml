@@ -12,6 +12,7 @@
         <module>Recommender</module>
         <module>Recommender/StatisticsRecommender</module>
         <module>Recommender/StatisticsRecommender</module>
+        <module>Recommender/OfflineRecommender</module>
     </modules>
 
     <properties>
