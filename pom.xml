@@ -13,6 +13,7 @@
         <module>Recommender/StatisticsRecommender</module>
         <module>Recommender/StatisticsRecommender</module>
         <module>Recommender/OfflineRecommender</module>
+        <module>Recommender/StreamingRecommender</module>
     </modules>
 
     <properties>

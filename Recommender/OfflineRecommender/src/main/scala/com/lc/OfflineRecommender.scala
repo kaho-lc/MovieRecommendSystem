@@ -5,6 +5,8 @@ import org.apache.spark.mllib.recommendation.{ALS, MatrixFactorizationModel, Rat
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.jblas.DoubleMatrix
+import org.apache.spark.sql.SaveMode
+
 
 import java.util.Properties
 
@@ -58,8 +60,6 @@ object OfflineRecommender {
     //调用model的predict方法来进行预测评分
     val preRatings: RDD[Rating] = model.predict(userMovies)
 
-
-    import org.apache.spark.sql.SaveMode
     import spark.implicits._
 
     val userRecs: DataFrame = preRatings
