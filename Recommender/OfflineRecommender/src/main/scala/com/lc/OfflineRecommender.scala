@@ -6,8 +6,6 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.jblas.DoubleMatrix
 import org.apache.spark.sql.SaveMode
-
-
 import java.util.Properties
 
 
