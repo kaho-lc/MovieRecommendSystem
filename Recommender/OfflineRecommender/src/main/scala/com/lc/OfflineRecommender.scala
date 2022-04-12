@@ -78,6 +78,7 @@ object OfflineRecommender {
     val movieFeatures: RDD[(Int, DoubleMatrix)] = model.productFeatures.map {
       case (mid, features) => (mid, new DoubleMatrix(features))
     }
+
     //对所有的电影自己和自己做笛卡尔积
     val movieRecs: DataFrame = movieFeatures.cartesian(movieFeatures).filter {
       //将自己和自己所配对的情况过滤掉
